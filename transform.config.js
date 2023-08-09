@@ -35,5 +35,13 @@ export const transformConfig = {
 		importOrderSeparation: true,
 		importOrderSortSpecifiers: true,
 	},
+	svgoConfig: {
+		plugins: [
+			{
+				name: 'removeViewBox',
+				active: false,
+			},
+		],
+	},
 	// ref: false,
 }

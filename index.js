@@ -4,6 +4,7 @@ import { transform } from '@svgr/core'
 import { transformConfig } from './transform.config.js'
 
 const folders = ['outline', 'solid']
+// const folders = ['test']
 
 async function convertSvgToJsx(filePath, newFileName) {
 	// Read SVG from the file
