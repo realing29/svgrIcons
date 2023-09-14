@@ -1,3 +1,4 @@
+import cssToObject from 'css-to-object'
 export const transformConfig = {
 	plugins: ['@svgr/plugin-svgo', '@svgr/plugin-jsx', '@svgr/plugin-prettier'],
 	replaceAttrValues: {
@@ -47,6 +48,31 @@ export const transformConfig = {
 				params: {},
 				fn: (ast) => {
 					delete ast.children[3].attributes['xmlns:xodm']
+
+					const cssString = ast.querySelector('style').children[0].value
+					const cssObject = cssToObject(cssString)
+					const cacheForDelete = []
+					Object.entries(cssObject).forEach(([className, styleObj]) => {
+						const elementsWithClass = ast.querySelectorAll(
+							`[class~=${className.slice(1)}]`,
+						)
+
+						elementsWithClass?.forEach((element) => {
+							const cssProps = Object.keys(styleObj)
+							cacheForDelete.push(element)
+
+							cssProps.map((cssProp) => {
+								const isStrokeOrFill = /^fill$|^stroke$/.test(cssProp)
+								if (isStrokeOrFill) {
+									element.attributes[cssProp] = 'currentColor'
+								}
+							})
+						})
+					})
+					cacheForDelete.forEach((element) => {
+						delete element.attributes.class
+					})
+
 					return ast
 				},
 			},
