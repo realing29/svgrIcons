@@ -2,9 +2,22 @@ import fs from 'fs'
 import path from 'path'
 import { transform } from '@svgr/core'
 import { transformConfig } from './transform.config.js'
+import { translit } from './utils/translit.js'
 
-const folders = ['outline', 'solid']
+const folders = ['brands']
 // const folders = ['test']
+
+const formattedFileName = (fileName) => {
+	const baseName = path.basename(fileName, '.svg')
+
+	const convertLv1 = translit(baseName)
+	const convertLv2 = convertLv1
+		.replaceAll(/\s/g, '-')
+		.split('-')
+		.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+		.join('')
+	return convertLv2
+}
 
 async function convertSvgToJsx(filePath, newFileName) {
 	// Read SVG from the file
@@ -31,13 +44,12 @@ async function generateJsxFiles() {
 			const filePath = path.join(folder, file)
 
 			// Prepare the new file name
-			const baseName = path.basename(file, '.svg')
-			const formattedBaseName = baseName
-				.split('-')
-				.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-				.join('')
+
+			const formattedBaseName = formattedFileName(file)
+
 			const newFileName = `${formattedBaseName}${
-				folder.charAt(0).toUpperCase() + folder.slice(1)
+				// folder.charAt(0).toUpperCase() + folder.slice(1)
+				''
 			}Icon`
 
 			await convertSvgToJsx(filePath, newFileName)

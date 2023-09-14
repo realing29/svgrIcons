@@ -41,7 +41,17 @@ export const transformConfig = {
 				name: 'removeViewBox',
 				active: false,
 			},
+			{
+				name: 'handleXmlnsXodm',
+				type: 'full',
+				params: {},
+				fn: (ast) => {
+					delete ast.children[3].attributes['xmlns:xodm']
+					return ast
+				},
+			},
 		],
 	},
+
 	// ref: false,
 }
